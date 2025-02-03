@@ -1,0 +1,38 @@
+<!-- 
+
+    INDEX OF ALL EXAMPLE FILES
+    
+-->
+<html>
+
+<head>
+  <title>Cacatoo examples</title>
+  <link rel="stylesheet" href="style/cacatoo.css"> <!-- Set style sheet -->
+</head>
+
+
+<body>
+  <div class="header" id="header">
+    <h2>Cacatoo</h2>
+  </div>
+  <div class="content" id="canvas_holder">
+    <h1>My models</h1>
+  </div>
+  <script>
+    fetch('/models')
+      .then(response => response.json())
+      .then(files => {
+        const holder = document.getElementById('canvas_holder');
+        files.forEach(file => {
+          const link = document.createElement('a');
+          link.href = file;
+          link.textContent = file;
+          link.style.display = 'block';
+          holder.appendChild(link);
+        });
+      })
+      .catch(error => console.error('Error loading models:', error));
+  </script>
+</body>
+
+</html>
