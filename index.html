@@ -22,13 +22,17 @@
     fetch('/models')
       .then(response => response.json())
       .then(files => {
-        const holder = document.getElementById('canvas_holder');
+        const canvasHolder = document.getElementById('canvas_holder');
         files.forEach(file => {
+          const name = file.replace(/^my_models\/([^\/]+)\/.*$/, "$1");
+          if (name == "Template") {
+            return;
+          }
           const link = document.createElement('a');
           link.href = file;
-          link.textContent = file;
+          link.textContent = name;
           link.style.display = 'block';
-          holder.appendChild(link);
+          canvasHolder.appendChild(link);
         });
       })
       .catch(error => console.error('Error loading models:', error));
