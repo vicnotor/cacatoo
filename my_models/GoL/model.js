@@ -58,6 +58,20 @@ function cacatoo() {
       gridpoint.alive = 0
     else
       gridpoint.alive = state
+
+    // Adding rng
+    // if (state == 0 && neighbours == 3)
+    //   if (this.rng.random() <= 0.01)
+    //     gridpoint.alive = 0
+    //   else
+    //     gridpoint.alive = 1
+    // else if (state == 1 && (neighbours < 2 || neighbours > 3))
+    //   if (this.rng.random() <= 0.01)
+    //     gridpoint.alive = 1
+    //   else
+    //     gridpoint.alive = 0
+    // else
+    //   gridpoint.alive = state
   }
 
   /*
@@ -65,7 +79,7 @@ function cacatoo() {
       applies the next-state function shown above to each grid point. All cells are updated at the same time, rather than in turn (for this, use the function "asynchonous")
   */
   sim.gol.update = function() {
-    this.asynchronous() // Applied as many times as it can in 1/60th of a second
+    this.synchronous() // Applied as many times as it can in 1/60th of a second
   }
 
   /*
