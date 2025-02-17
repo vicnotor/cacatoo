@@ -23,12 +23,25 @@ function getModelFiles() {
   });
 }
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.get('/models', (req, res) => {
   res.json(getModelFiles());
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+// SSE (Server-Sent Events) for auto-reloading page after filechanges
+app.get("/events", (req, res) => {
+  res.set({
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    "Connection": "keep-alive",
+  });
+
+  res.write("data: connected\n\n");
+
+  req.on("close", () => res.end());
 });
 
 app.use(express.static('.'));

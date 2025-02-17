@@ -12,14 +12,14 @@ function cacatoo() {
     title: "Competition",                 // The name of your cacatoo-simulation
     description: "Competition",           // And a description if you wish
     maxtime: 1000000,                     // How many time steps the model continues to run            
-    ncol: 60,                             // Number of columns (width of your grid)
-    nrow: 60,		                          // Number of rows (height of your grid)
+    ncol: 200,                             // Number of columns (width of your grid)
+    nrow: 200,		                          // Number of rows (height of your grid)
     wrap: [true, true],                   // Wrapped boundary conditions? [COLS, ROWS]   
-    scale: 5,				                      // Scale of the grid (nxn pixels per grid point)
+    scale: 2,				                      // Scale of the grid (nxn pixels per grid point)
     statecolours: {                       // Colours for each state. Background (0) defaults to black. 
       'state': {
-        1: 'red',
-        2: 'yellow'
+        'x': 'red',
+        'y': 'yellow'
       }
     },
   }
@@ -29,8 +29,8 @@ function cacatoo() {
   */
   sim = new Simulation(config)                          // Initialise the Cacatoo simulation
   sim.makeGridmodel("competition")                            // Build a new Gridmodel within the simulation called "model"
-  sim.initialSpot(sim.competition, "state", 1, 4, sim.competition.nc / 2 - 3, sim.competition.nr / 2) //start with 
-  sim.initialSpot(sim.competition, "state", 2, 4, sim.competition.nc / 2 + 3, sim.competition.nr / 2) //start with 
+  sim.initialSpot(sim.competition, "state", 'x', 4, sim.competition.nc / 2 - 3, sim.competition.nr / 2) //start with 
+  sim.initialSpot(sim.competition, "state", 'y', 4, sim.competition.nc / 2 + 3, sim.competition.nr / 2) //start with 
   sim.createDisplay("competition", "state", "")               // Create a display so we can see our newly made gridmodel
 
   /*
@@ -41,16 +41,22 @@ function cacatoo() {
     let state = gridpoint.state
     let randomNeighbor = this.randomMoore8(this, x, y)
 
+    let deathX = this.rng.random() < 0.2
+    let birthX = this.rng.random() < 0.8
+
+    let deathY = this.rng.random() < 0.2
+    let birthY = this.rng.random() < 0.7
+
     // Then, apply the rules of game of life shown above
-    if (state == 1 || state == 2)
-      if (this.rng.random() < 0.2) // Random death
-        gridpoint.state = 0
-      else
-        gridpoint.state = state
-    else if (randomNeighbor.state == 1)
-      gridpoint.state = 1
-    else if (randomNeighbor.state == 2)
-      gridpoint.state = 2
+    if ((state == 'x' && deathX) || (state == 'y' && deathY))
+      gridpoint.state = 0
+    else if (randomNeighbor.state == 'x' && birthX)
+      gridpoint.state = 'x'
+    else if (randomNeighbor.state == 'y' && birthY)
+      gridpoint.state = 'y'
+    else
+      gridpoint.state = state
+
 
   }
 
@@ -67,8 +73,8 @@ function cacatoo() {
 
   sim.addButton("reset to initial pattern", function() {
     sim.initialGrid(sim.competition, 'state', 0, 1)           // Set half (50%) of the Gridmodel's grid points to 1 (alive)
-    sim.initialSpot(sim.competition, "state", 1, 4, sim.competition.nc / 2 - 3, sim.competition.nr / 2) //start with 
-    sim.initialSpot(sim.competition, "state", 2, 4, sim.competition.nc / 2 + 3, sim.competition.nr / 2) //start with 
+    sim.initialSpot(sim.competition, "state", 'x', 4, sim.competition.nc / 2 - 3, sim.competition.nr / 2) //start with 
+    sim.initialSpot(sim.competition, "state", 'y', 4, sim.competition.nc / 2 + 3, sim.competition.nr / 2) //start with 
     sim.display()
   })
   sim.addButton("run/pause", function() {
