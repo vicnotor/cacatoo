@@ -48,11 +48,11 @@ function cacatoo() {
   sim.model.nextState = function(i, j) {
     let neighbours = this.countMoore9(this, i, j, 'vote', 1);
 
-    // Original
-    if (neighbours >= 5)
-      this.grid[i][j].vote = 1
-    else
-      this.grid[i][j].vote = 0
+    // // Original
+    // if (neighbours >= 5)
+    //   this.grid[i][j].vote = 1
+    // else
+    //   this.grid[i][j].vote = 0
 
     // Randomness added
     // if (neighbours >= 5)
@@ -67,20 +67,20 @@ function cacatoo() {
     //     this.grid[i][j].vote = 0 // Happens in most of the cases
 
     // Next experimentation
-    // // One approach
+    // // One approach (Kind of like modulo prime)
     // if (neighbours % 2 == 0)
     //   this.grid[i][j].vote = 1;
     // else
     //   this.grid[i][j].vote = 0;
-    // // // Another approach
-    // if (neighbours == 4)
-    //   this.grid[i][j].vote = 1;
-    // else if (neighbours == 5)
-    //   this.grid[i][j].vote = 0;
-    // else if (neighbours < 4)
-    //   this.grid[i][j].vote = 0;
-    // else
-    //   this.grid[i][j].vote = 1;
+    // Another approach
+    if (neighbours == 4)
+      this.grid[i][j].vote = 1;
+    else if (neighbours == 5)
+      this.grid[i][j].vote = 0;
+    else if (neighbours < 4)
+      this.grid[i][j].vote = 0;
+    else
+      this.grid[i][j].vote = 1;
 
   }
 

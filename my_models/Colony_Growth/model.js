@@ -7,6 +7,7 @@ You can use:
 var parameter_name = parameter_value;
 */
 
+let previousPopSize; // Initialisation of global state of population size
 
 
 /**
@@ -27,7 +28,7 @@ function cacatoo() {
     scale: 2, // Scale of the grid (nxn pixels per grid point)
     statecolours: {
       'alive': {
-        1: 'white'
+        1: 'yellow'
       }
     }, // Colours for each state. Background (0) defaults to black. 
   }
@@ -38,9 +39,9 @@ function cacatoo() {
   sim = new Simulation(config) // Initialise the Cacatoo simulation
   sim.makeGridmodel("colony") // Build a new Gridmodel within the simulation called "colony" 
 
-  sim.initialSpot(sim.colony, "alive", 1, 2, sim.colony.nc / 2, sim.colony.nr / 2) //start with 
+  sim.initialSpot(sim.colony, "alive", 1, 16, sim.colony.nc / 2, sim.colony.nr / 2) //start with 
 
-  sim.createDisplay("colony", "alive", "Bacterial colony growth (white=alive)") // Create a display so we can see our newly made gridmodel
+  sim.createDisplay("colony", "alive", "Bacterial colony growth (yellow=alive)") // Create a display so we can see our newly made gridmodel
   /*
       2. DEFINING THE RULES. Below, the user defines the nextState function. This function will be applied for each grid point when we will update the grid later. 
   */
@@ -54,6 +55,20 @@ function cacatoo() {
     4. How can you model birth?
     5. How can you model death?
   */
+    let gridpoint = this.grid[i][j]
+    let state = gridpoint.alive
+    let randomNeighbor = this.randomMoore8(this, i, j)
+
+    // Then, apply the rules of game of life shown above
+    if (state == 1)
+      if (this.rng.random() < 0.2) // Random death
+        gridpoint.alive = 0
+      else
+        gridpoint.alive = state
+    else if (randomNeighbor.alive == 1) // Random growth, but higher chance of growth when more neighbors are alive
+      gridpoint.alive = 1
+    else
+      gridpoint.alive = state
 
 
   } // sim.colony.nextState end 
@@ -76,12 +91,18 @@ function cacatoo() {
     3. Should the command to make the plot be before or after the update command (this.asynchronous())? 
     */
 
-    this.plotPopsizes("alive", [0, 1]);
 
+    let currentPopSize = sim.colony.getPopsizes("alive", [1])[0]
+    let growthRate;
+    if (previousPopSize)
+      growthRate = (currentPopSize - previousPopSize) / previousPopSize
+    previousPopSize = currentPopSize
+    this.plotXY(["pop size", "p.c. growth rate"], [currentPopSize, growthRate], ["red"], "Per capita growth rate", {})
+
+    this.plotPopsizes("alive", [1]);
+
+    // this.perfectMix() // Mix well
     this.asynchronous() // Applied as many times as it can in 1/60th of a second
-
-
-
   } // sim.colony.update end 
 
   /*
@@ -91,6 +112,43 @@ function cacatoo() {
   sim.addButton("run/pause", function() {
     sim.toggle_play()
   })
+  sim.addCustomSlider("Pause between updates (ms)", function(new_value) {
+    sim.sleep = new_value
+  }, 0, 1000, 1, 0) // addCustomSlider(function, minimal, maximal, step-size, default, label)
+
+  // Drawing on canvas
+  sim.addButton("Draw black (0)", function() {
+    sim.place_value = 0;
+  })
+  sim.addButton("Draw yellow (1)", function() {
+    sim.place_value = 1;
+  })
+  sim.addCustomSlider("Brush size", function(new_value) {
+    sim.place_size = new_value
+  }, 1, 100, 1, 10) // addCustomSlider(function, minimal, maximal, step-size, default, label)
+
+  sim.place_value = 1
+  sim.place_size = 10
+  var mouseDown = false
+  let drawing_canvas = sim.canvases[0] // the first (and only) canvas in this model 
+
+  var coords
+  var interval
+
+  sim.canvases[0].elem.addEventListener('mousemove', (e) => {
+    coords = sim.getCursorPosition(sim.canvases[0], e, config.scale)
+  })
+
+  sim.canvases[0].elem.addEventListener('mousedown', (e) => {
+    interval = setInterval(function() {
+      if (mouseDown) {
+        sim.putSpot(sim.colony, 'alive', sim.place_value, sim.place_size, coords.x, coords.y)
+        sim.display()
+      }
+    }, 10)
+  })
+  sim.canvases[0].elem.addEventListener('mousedown', (e) => { mouseDown = true })
+  sim.canvases[0].elem.addEventListener('mouseup', (e) => { mouseDown = false })
 
 
   sim.start()
