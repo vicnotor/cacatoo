@@ -19,8 +19,8 @@ function cacatoo() {
     statecolours: {                       // Colours for each state. Background (0) defaults to black. 
       'state': {
         'x': 'red',
-        'y': 'yellow'
-      }
+        'y': 'yellow',
+      },
     },
   }
 
@@ -37,27 +37,67 @@ function cacatoo() {
       2. DEFINING THE RULES. Below, the user defines the nextState function. This function will be applied for each grid point when we will update the grid later. 
   */
   sim.competition.nextState = function(x, y) {
+    // // 3a
+    // let gridpoint = this.grid[x][y]
+    // let state = gridpoint.state
+    // let randomNeighbor = this.randomMoore8(this, x, y)
+    //
+    // let deathX = this.rng.random() < 0.2
+    // let birthX = this.rng.random() < 0.8
+    //
+    // let deathY = this.rng.random() < 0.2
+    // let birthY = this.rng.random() < 0.8
+    //
+    // // Then, apply the rules of game of life shown above
+    // if (state == 'x' && deathX)
+    //   gridpoint.state = 0
+    // else if (state == 'y' && deathY)
+    //   gridpoint.state = 0
+    // else if (randomNeighbor.state == 'x' && birthX) // && state == 0
+    //   gridpoint.state = 'x'
+    // else if (randomNeighbor.state == 'y' && birthY) // && state == 0
+    //   gridpoint.state = 'y'
+    // else
+    //   gridpoint.state = state
+
+    // 3c
     let gridpoint = this.grid[x][y]
     let state = gridpoint.state
     let randomNeighbor = this.randomMoore8(this, x, y)
+    let xNeighbors = this.countMoore8(this, x, y, 'state', 'x')
+    let propXNeighbors = xNeighbors / 8
+    let yNeighbors = this.countMoore8(this, x, y, 'state', 'y')
+    let propYNeighbors = yNeighbors / 8
 
-    let deathX = this.rng.random() < 0.2
-    let birthX = this.rng.random() < 0.8
+    let randomNumber = this.rng.random()
 
-    let deathY = this.rng.random() < 0.2
-    let birthY = this.rng.random() < 0.7
+    let birthX = 0.5
+    let deathX = 0.1
+    let compX = 0.25
 
-    // Then, apply the rules of game of life shown above
-    if ((state == 'x' && deathX) || (state == 'y' && deathY))
-      gridpoint.state = 0
-    else if (randomNeighbor.state == 'x' && birthX)
-      gridpoint.state = 'x'
-    else if (randomNeighbor.state == 'y' && birthY)
-      gridpoint.state = 'y'
+    let birthY = 0.5
+    let deathY = 0.1
+    let compY = 0.8 // When much larger than compX, invasion of small number of X into system of only Y's can occur
+
+    if (state == 'x')
+      if (randomNumber < deathX)
+        gridpoint.state = 0
+      else
+        gridpoint.state = state
+    else if (state == 'y')
+      if (randomNumber < deathY)
+        gridpoint.state = 0
+      else
+        gridpoint.state = state
     else
-      gridpoint.state = state
-
-
+      // if (randomNeighbor.state == 'x' && randomNumber < birthX - propXNeighbors * compX) // Intraspecific competition
+      if (randomNeighbor.state == 'x' && randomNumber < birthX - propYNeighbors * compX) // Interspecific competition
+        gridpoint.state = 'x'
+      // else if (randomNeighbor.state == 'y' && randomNumber < birthY - propYNeighbors * compY) // Intraspecific competition
+      else if (randomNeighbor.state == 'y' && randomNumber < birthY - propXNeighbors * compY) // Interspecific competition
+        gridpoint.state = 'y'
+      else
+        gridpoint.state = state
   }
 
   /*
@@ -72,7 +112,7 @@ function cacatoo() {
   */
 
   sim.addButton("reset to initial pattern", function() {
-    sim.initialGrid(sim.competition, 'state', 0, 1)           // Set half (50%) of the Gridmodel's grid points to 1 (alive)
+    sim.initialGrid(sim.competition, 'state', 0, 1)
     sim.initialSpot(sim.competition, "state", 'x', 4, sim.competition.nc / 2 - 3, sim.competition.nr / 2) //start with 
     sim.initialSpot(sim.competition, "state", 'y', 4, sim.competition.nc / 2 + 3, sim.competition.nr / 2) //start with 
     sim.display()
@@ -83,8 +123,18 @@ function cacatoo() {
   sim.addCustomSlider("Pause between updates (ms)", function(new_value) {
     sim.sleep = new_value
   }, 0, 1000, 1, 0) // addCustomSlider(function, minimal, maximal, step-size, default, label)
+  sim.addCustomSlider("Random seed (sequence of numbers)", function(new_value) {
+    let seedReadOut = new_value
+    sim.config.seed = seedReadOut
+    sim.rng = new MersenneTwister(new_value)
+    sim.initialGrid(sim.competition, 'state', 'x', 'y', 0.5)
+    sim.display()
+  }, 0, 10000, 0, 0) // addCustomSlider(function, minimal, maximal, step-size, default, label)
+  sim.addButton("Set an invasion pattern (X is the invader)", function(new_value) {
+    sim.initialGrid(sim.competition, 'state', 'y', 1)
+    sim.initialSpot(sim.competition, "state", 'x', 8, sim.competition.nc / 2, sim.competition.nr / 2) //start with 
+    sim.display()
+  })
 
   sim.start()
-  sim.toggle_play()
-
 }
