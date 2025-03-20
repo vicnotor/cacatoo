@@ -52,9 +52,9 @@ function cacatoo() {
     if (species == 0) {
       if (sim.particles.grid[i][j].public_good == 'public_good' && nNeighbors > 0 && random < benefit) {
         sim.particles.grid[i][j].public_good = 'nothing'
-        return this.grid[i][j].species = 'N'
+        this.grid[i][j].species = 'N'
       }
-      if (random < cost)
+      else if (random < cost)
         this.grid[i][j].species = 0
       else if (sim.particles.grid[i][j].public_good == 'public_good' && pNeighbors > 0 && random < benefit) {
         sim.particles.grid[i][j].public_good = 'nothing'
@@ -62,7 +62,7 @@ function cacatoo() {
       }
     }
 
-    if (species == "P") {
+    else if (species == "P") {
       if (random < deathP)
         this.grid[i][j].species = 0
       else if (random < prodP)
