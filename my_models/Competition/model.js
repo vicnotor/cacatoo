@@ -73,11 +73,13 @@ function cacatoo() {
 
     let birthX = 0.5
     let deathX = 0.1
-    let compX = 0.25
+    let compX = 0.0
+    let intraX = 0.25
 
     let birthY = 0.5
     let deathY = 0.1
-    let compY = 0.8 // When much larger than compX, invasion of small number of X into system of only Y's can occur
+    let compY = 0 // When much larger than compX, invasion of small number of X into system of only Y's can occur
+    let intraY = 0.3
 
     if (state == 'x')
       if (randomNumber < deathX)
@@ -91,10 +93,10 @@ function cacatoo() {
         gridpoint.state = state
     else
       // if (randomNeighbor.state == 'x' && randomNumber < birthX - propXNeighbors * compX) // Intraspecific competition
-      if (randomNeighbor.state == 'x' && randomNumber < birthX - propYNeighbors * compX) // Interspecific competition
+      if (randomNeighbor.state == 'x' && randomNumber < birthX - propYNeighbors * compX - propXNeighbors * intraX) // Interspecific competition
         gridpoint.state = 'x'
       // else if (randomNeighbor.state == 'y' && randomNumber < birthY - propYNeighbors * compY) // Intraspecific competition
-      else if (randomNeighbor.state == 'y' && randomNumber < birthY - propXNeighbors * compY) // Interspecific competition
+      else if (randomNeighbor.state == 'y' && randomNumber < birthY - propXNeighbors * compY - propYNeighbors * intraY) // Interspecific competition
         gridpoint.state = 'y'
       else
         gridpoint.state = state
