@@ -499,7 +499,7 @@ class Gridmodel {
                  return_dict[statekey] = colours;
             }
             else if (statedict == 'inferno') {
-                let colours = this.colourGradientArray(num_colours, 0,[20, 11, 52], [132, 32, 107], [229, 92, 45], [246, 215, 70]); 
+                let colours = this.colourGradientArray(num_colours, 0,[0, 0, 0], [132, 32, 107], [229, 92, 45], [246, 215, 70]); 
                 return_dict[statekey] = colours;                
             }
             else if (statedict == 'inferno_rev') {
@@ -600,7 +600,7 @@ class Gridmodel {
             else this.colourGradient(property, n, [253, 231, 37], [93, 201, 99], [33, 144, 140], [59, 82, 139], [68, 1, 84]);             // Viridis
         }
         else if(option=="inferno"){
-            if (!rev) this.colourGradient(property, n, [20, 11, 52], [132, 32, 107], [229, 92, 45], [246, 215, 70]);         // Inferno
+            if (!rev) this.colourGradient(property, n, [0, 0, 0], [132, 32, 107], [229, 92, 45], [246, 215, 70]);         // Inferno
             else this.colourGradient(property, n, [246, 215, 70], [229, 92, 45], [132, 32, 107], [20, 11, 52]);              // Inferno
         }
     }    
@@ -1720,7 +1720,7 @@ class Flockmodel {
                  return_dict[statekey] = colours;
             }
             else if (statedict == 'inferno') {
-                let colours = this.colourGradientArray(num_colours, 0,[20, 11, 52], [132, 32, 107], [229, 92, 45], [246, 215, 70]); 
+                let colours = this.colourGradientArray(num_colours, 0,[0, 0, 0], [132, 32, 107], [229, 92, 45], [246, 215, 70]); 
                 return_dict[statekey] = colours;                
             }
             else if (statedict == 'inferno_rev') {
@@ -1820,7 +1820,7 @@ class Flockmodel {
             else this.colourGradient(property, n, [253, 231, 37], [93, 201, 99], [33, 144, 140], [59, 82, 139], [68, 1, 84]);             // Viridis
         }
         else if(option=="inferno"){
-            if (!rev) this.colourGradient(property, n, [20, 11, 52], [132, 32, 107], [229, 92, 45], [246, 215, 70]);         // Inferno
+            if (!rev) this.colourGradient(property, n, [0, 0, 0], [132, 32, 107], [229, 92, 45], [246, 215, 70]);         // Inferno
             else this.colourGradient(property, n, [246, 215, 70], [229, 92, 45], [132, 32, 107], [20, 11, 52]);              // Inferno
         }
     }    
