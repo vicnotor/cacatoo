@@ -62,7 +62,7 @@ function cacatoo() {
 
   sim.populateSpot(sim.invasion, species, [1, 0, 0], 16, spawnX, spawnY)
 
-  sim.createDisplay("invasion", "species", "CA")
+  sim.createDisplay("invasion", "species", "")
   sim.createDisplay_continuous({
     model: "invasion",
     property: "production",
@@ -74,7 +74,7 @@ function cacatoo() {
   sim.createDisplay_continuous({
     model: "particles",
     property: "public_good",
-    label: "Public_Good",
+    label: "Public Good",
     minval: 0,
     maxval: 1,
     fill: "inferno",
@@ -287,6 +287,8 @@ function cacatoo() {
   })
   sim.canvases[0].elem.addEventListener('mousedown', (e) => { mouseDown = true })
   sim.canvases[0].elem.addEventListener('mouseup', (e) => { mouseDown = false })
+
+
 
   sim.start()
   sim.toggle_play()
