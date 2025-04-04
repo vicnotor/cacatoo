@@ -192,20 +192,12 @@ function cacatoo() {
 
     this.plotPopsizes('species', ['producer', 'non-producer', 'low-producer']);
 
-    // TODO: fix this
-    // Ensure the ratio calculation accounts for sumP always producing and divisions by 0
-    // let ratio = sumN === 0 && sumNP === 0 ? sumP : (sumP + sumNP) / (sumN > 0 ? sumN : 1);
-    // this.plotArray(["Ratio prod + prod_par / Non-prod"],
-    //   [ratio],
-    //   ["gold"],
-    //   "Time plot of (producer/non-producer) ratio");
-
     let avgProd = 0;
-    let avgProdParasite = 0;
-    let countNonProd = 0;
-    let avgNonProducer = 0;
+    let avgLowProd = 0;
+    let avgNonProd = 0;
     let countProd = 0;
-    let countProdParasite = 0;
+    let countNonProd = 0;
+    let countLowProd = 0;
 
     for (let i = 0; i < this.nc; i++) {
       for (let j = 0; j < this.nr; j++) {
@@ -214,21 +206,22 @@ function cacatoo() {
           avgProd += gridpoint.production;
           countProd++;
         } else if (gridpoint.species === 'non-producer') {
-          avgNonProducer += gridpoint.production;
+          avgNonProd += gridpoint.production;
           countNonProd++;
         } else if (gridpoint.species === 'low-producer') {
-          avgProdParasite += gridpoint.production;
-          countProdParasite++;
+          avgLowProd += gridpoint.production;
+          countLowProd++;
         };
       };
     };
 
     avgProd = countProd > 0 ? avgProd / countProd : 0;
-    avgProdParasite = countProdParasite > 0 ? avgProdParasite / countProdParasite : 0;
+    avgNonProd = countNonProd > 0 ? avgNonProd / countNonProd : 0;
+    avgLowProd = countLowProd > 0 ? avgLowProd / countLowProd : 0;
 
     this.plotArray(
-      ["Avg Production (Producer)", "Avg Production (Producer Parasite)"],
-      [avgProd, avgNonProducer, avgProdParasite],
+      ["Avg Production (Producer)", "Avg Production (Non-producer)", "Avg Production (Low-producer)"],
+      [avgProd, avgNonProd, avgLowProd],
       ["green", "red", "blue"],
       "Time plot of average production levels (mutates)"
     );
@@ -241,7 +234,7 @@ function cacatoo() {
     sim.populateSpot(sim.invasion, species, [0, 1, 0], 50, spawnX, spawnY)
   })
 
-  sim.addButton("Let producing invader invade", function() {
+  sim.addButton("Let low-producer invader invade", function() {
     sim.populateSpot(sim.invasion, species, [0, 0, 1], 50, spawnX, spawnY)
   })
 
@@ -276,7 +269,7 @@ function cacatoo() {
   sim.addButton("Draw non-producer", function() {
     sim.place_value = [0, 1, 0];
   })
-  sim.addButton("Draw producer parasite", function() {
+  sim.addButton("Draw low-producer", function() {
     sim.place_value = [0, 0, 1];
   })
   sim.addCustomSlider("Brush size", function(new_value) {
