@@ -1,8 +1,7 @@
 let sim;
 
 const decay = 0.4
-// const mut = 0.05;		//mutation rate
-const mut = 0.0;		//mutation rate
+const mut = 0.05;		//mutation rate
 const dmut = 0.05; //mutation step (percentage up or downwards)
 
 function cacatoo() {
@@ -21,8 +20,8 @@ function cacatoo() {
     statecolours: {
       'species': {
         'producer': "green",
-        'non-producer': "red",
-        'producer_parasite': "blue"
+        'non-producer': "red"
+        // 'producer_parasite': "blue"
       },
     }
   }
@@ -124,7 +123,7 @@ function cacatoo() {
         gridpoint.species = randNeigh.species;
         gridpoint.growth = randNeigh.growth;
         gridpoint.death = randNeigh.death;
-        gridpoint.production = randNeigh.production * (1 + mutstep);
+        gridpoint.production = Math.max(0, randNeigh.production * (1 + mutstep));
         gridpoint.benefit = randNeigh.benefit;
         gridpoint.cost = randNeigh.cost;
       }
