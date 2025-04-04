@@ -1,7 +1,8 @@
 let sim;
 
 const decay = 0.4
-const mut = 0.05;		//mutation rate
+// const mut = 0.05;		//mutation rate
+const mut = 0.0;		//mutation rate
 const dmut = 0.05; //mutation step (percentage up or downwards)
 
 function cacatoo() {
@@ -267,9 +268,6 @@ function cacatoo() {
 
   var mouseDown = false
 
-
-  let drawing_canvas = sim.canvases[0] // the first (and only) canvas in this model 
-
   var coords
   var interval
 
@@ -277,7 +275,7 @@ function cacatoo() {
     coords = sim.getCursorPosition(sim.canvases[0], e, config.scale)
   })
 
-  sim.canvases[0].elem.addEventListener('mousedown', (e) => {
+  sim.canvases[0].elem.addEventListener('mousedown', (_) => {
     interval = setInterval(function() {
       if (mouseDown) {
         sim.populateSpot(sim.invasion, species, sim.place_value, sim.place_size, coords.x, coords.y)
@@ -285,8 +283,8 @@ function cacatoo() {
       }
     }, 10)
   })
-  sim.canvases[0].elem.addEventListener('mousedown', (e) => { mouseDown = true })
-  sim.canvases[0].elem.addEventListener('mouseup', (e) => { mouseDown = false })
+  sim.canvases[0].elem.addEventListener('mousedown', (_) => { mouseDown = true })
+  sim.canvases[0].elem.addEventListener('mouseup', (_) => { mouseDown = false })
 
   sim.start()
   sim.toggle_play()
