@@ -3,8 +3,6 @@ let sim;
 const decay = 0.4
 const mut = 0.05;		//mutation rate
 const dmut = 0.05; //mutation step (percentage up or downwards)
-const mutNP = 0.00; // Probeer 0.01 misschien
-const dmutNP = 0.00; // Probeer 0.01 misschien
 
 function cacatoo() {
   let config = {
@@ -22,8 +20,8 @@ function cacatoo() {
     statecolours: {
       'species': {
         'producer': "green",
-        'non-producer': "red",
-        'low-producer': "blue"
+        'non-producer': "red"
+        // 'producer_parasite': "blue"
       },
     }
   }
@@ -54,7 +52,7 @@ function cacatoo() {
       cost: 0.1,
     },
     {
-      species: 'low-producer',
+      species: 'producer_parasite',
       growth: 1,
       death: 0.1,
       production: 0.2,
@@ -112,22 +110,12 @@ function cacatoo() {
 
     //To determine the new born's kget rate, check if mutation occurs
     mutstep = 0;										// if no mutation occurs, mutstep will be zero.
-    if (randNeigh.species == "producer" || randNeigh.species == "low-producer") {
-      if (this.rng.random() < mut) {		// check if mutation occurs
-        if (this.rng.random() < 0.5) {	//check if mutation is up or down
-          mutstep = dmut;							//mutation will increase property
-        } else {
-          mutstep = -dmut;						//mutation will decrease property
-        }
-      };
-    } else if (randNeigh.species == "non-producer") {
-      if (this.rng.random() < mutNP) {		// check if mutation occurs
-        if (this.rng.random() < 0.5) {	//check if mutation is up or down
-          mutstep = dmutNP;							//mutation will increase property
-        } else {
-          mutstep = -dmutNP;						//mutation will decrease property
-        }
-      };
+    if (this.rng.random() < mut) {		// check if mutation occurs
+      if (this.rng.random() < 0.5) {	//check if mutation is up or down
+        mutstep = dmut;							//mutation will increase property
+      } else {
+        mutstep = -dmut;						//mutation will decrease property
+      }
     };
 
     if (!gridpoint.species) {
@@ -138,7 +126,6 @@ function cacatoo() {
         gridpoint.production = Math.max(0, randNeigh.production * (1 + mutstep));
         gridpoint.benefit = randNeigh.benefit;
         gridpoint.cost = randNeigh.cost;
-        particleGridpoint.public_good_ode.pars = [gridpoint.production, decay]
       }
     }
     else {
@@ -186,11 +173,11 @@ function cacatoo() {
       for (let j = 0; j < this.nr; j++) {
         if (this.grid[i][j].species === 'producer') sumP++;
         else if (this.grid[i][j].species === 'non-producer') sumN++;
-        else if (this.grid[i][j].species === 'low-producer') sumNP++;
+        else if (this.grid[i][j].species === 'producer_parasite') sumNP++;
       };
     };
 
-    this.plotPopsizes('species', ['producer', 'non-producer', 'low-producer']);
+    this.plotPopsizes('species', ['producer', 'non-producer', 'producer_parasite']);
 
     // TODO: fix this
     // Ensure the ratio calculation accounts for sumP always producing and divisions by 0
@@ -202,8 +189,6 @@ function cacatoo() {
 
     let avgProd = 0;
     let avgProdParasite = 0;
-    let countNonProd = 0;
-    let avgNonProducer = 0;
     let countProd = 0;
     let countProdParasite = 0;
 
@@ -213,10 +198,7 @@ function cacatoo() {
         if (gridpoint.species === 'producer') {
           avgProd += gridpoint.production;
           countProd++;
-        } else if (gridpoint.species === 'non-producer') {
-          avgNonProducer += gridpoint.production;
-          countNonProd++;
-        } else if (gridpoint.species === 'low-producer') {
+        } else if (gridpoint.species === 'producer_parasite') {
           avgProdParasite += gridpoint.production;
           countProdParasite++;
         };
@@ -228,8 +210,8 @@ function cacatoo() {
 
     this.plotArray(
       ["Avg Production (Producer)", "Avg Production (Producer Parasite)"],
-      [avgProd, avgNonProducer, avgProdParasite],
-      ["green", "red", "blue"],
+      [avgProd, avgProdParasite],
+      ["green", "blue"],
       "Time plot of average production levels (mutates)"
     );
   };
